@@ -1,29 +1,29 @@
 import cv2
-from matplotlib import numpy, pyplot
+from matplotlib import numpy
 from functions import getColors
 
+#pego a cor no padrão BGR, nesse caso, a cor amarela
 bgr_color = numpy.uint8([[[0, 255, 255]]])
 
+#Pego os extremos do intervalo de cores
 lightTom, darkTom = getColors(bgr_color)
 
-img = cv2.imread('./cubo.png')
+#Leio a imagem de satélite
+img = cv2.imread('./desertification.png')
+cv2.imshow("original", img)
 
+#converto a imagem para HSV
 img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-img_seg = cv2.inRange(img_hsv, lightTom, darkTom)
 
-yellowFilter=cv2.inRange(img_hsv, lightTom, darkTom)
-result = cv2.bitwise_and(img, img, mask=yellowFilter)
+#crio um filtro HSV para filtrar a imagem
+yellowMask=cv2.inRange(img_hsv, lightTom, darkTom)
+cv2.imshow('segmentedImage', yellowMask)
 
-# gray = cv2.cvtColor(result, cv2.COLOR_RGB2GRAY)
-# _, binary = cv2.threshold(gray, 225, 255, cv2.THRESH_BINARY_INV)
-# contours, hierarchy = cv2.findContours(yellowFilter, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-# area = cv2.drawContours(img, contours, -1, (0, 255, 255), 3)
-
-# pyplot.imshow(area)
-# pyplot.show()
-cv2.imshow('yellowFilter', yellowFilter)
+#Primeiro parametro é correspondente à primeira imagem de entrada que a função deve aplicar
+#Segundo parametro é a imagem que será aplicada a operação
+#terceiro parametro é a mascara que será aplicada a imagem
+result = cv2.bitwise_and(img, img, mask=yellowMask)
 cv2.imshow('result', result)
-# cv2.imshow("original", img)
 
 cv2.waitKey()
 
